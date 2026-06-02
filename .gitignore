@@ -1,4 +1,4 @@
 config.py
 esp32cam-main/
 YOLO/
-pycache/
+__pycache__/

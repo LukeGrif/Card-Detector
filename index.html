@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IoT Monitor — University of Limerick</title>
 
-  <link rel="icon" type="image/svg+xml" href="docs/ul-crest.svg" />
+  <link rel="icon" type="image/svg+xml" href="docs/logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -518,7 +518,7 @@
 <header>
   <div class="header-top">
     <a class="ul-logo-wrap" href="https://www.ul.ie" target="_blank" rel="noopener" aria-label="University of Limerick">
-      <img src="docs/ul_logo.png" alt="UL Crest" />
+      <img src="docs/logo.svg" alt="UL Crest" />
       <div class="ul-wordmark">
         <span class="name-en">University of Limerick</span>
         <span class="name-ga">Ollscoil Luimnigh</span>
@@ -692,11 +692,11 @@
 
 <!-- ══ SCRIPT ══════════════════════════════════════════════════════════ -->
 <script>
-  const GITHUB_TOKEN   = 'your_token_here';
+  const GITHUB_TOKEN   = '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';              // ← paste your read-only token here, do not commit
   const GITHUB_USER    = 'LukeGrif';
   const GITHUB_REPO    = 'Card-Detector';
   const IMAGES_FOLDER  = 'detections';
-  const DET_REFRESH_MS = 60000;
+  const DET_REFRESH_MS = 120000;
 
   // ══ CARD DETECTOR ══════════════════════════════════════════════════════
   const REFRESH_S = 30;
@@ -796,29 +796,28 @@
 
   // ══ PERSON DETECTIONS ══════════════════════════════════════════════════
   const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${IMAGES_FOLDER}`;
-  const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${IMAGES_FOLDER}`;
+  const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/master/${IMAGES_FOLDER}`;
 
   let detInterval = null;
 
   async function loadGallery() {
     document.getElementById('statStatus').textContent = 'Refreshing…';
     try {
-        const r = await fetch(API_BASE + '?_=' + Date.now(), {
-        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
-        });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const files = (await r.json())
+      const headers = GITHUB_TOKEN ? { 'Authorization': `token ${GITHUB_TOKEN}` } : {};
+      const r = await fetch(API_BASE + '?_=' + Date.now(), { headers });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const files = (await r.json())
         .filter(f => f.name.endsWith('.jpg'))
         .sort((a, b) => b.name.localeCompare(a.name));
-        renderLatest(files);
-        document.getElementById('statStatus').textContent = 'Live';
+      renderLatest(files);
+      document.getElementById('statStatus').textContent = 'Live';
     } catch(e) {
-        document.getElementById('statStatus').textContent = 'Error';
-        console.error(e);
+      document.getElementById('statStatus').textContent = 'Error';
+      console.error(e);
     }
     clearInterval(detInterval);
     detInterval = setInterval(loadGallery, DET_REFRESH_MS);
-    }
+  }
 
   function parseFilename(name) {
     const m = name.match(/(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})/);
