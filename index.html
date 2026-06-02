@@ -6,7 +6,6 @@
   <title>IoT Monitor — University of Limerick</title>
 
   <link rel="icon" type="image/svg+xml" href="docs/ul-crest.svg" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 
@@ -91,65 +90,61 @@
       letter-spacing: 1px; text-transform: uppercase; margin-top: 1px;
     }
 
-    /* ══ TAB NAV ═════════════════════════════════════════════════════════ */
-    .tab-nav {
-      display: flex;
-      background: rgba(0,0,0,0.2);
-      border-bottom: 1px solid rgba(59,177,67,0.2);
+    .header-nav {
+      padding: 6px 32px;
+      font-size: 0.76rem;
+      color: rgba(255,255,255,0.55);
+      background: rgba(0,0,0,0.15);
+      letter-spacing: 0.4px;
     }
 
-    .tab-btn {
-      padding: 10px 28px;
-      font-size: 0.75rem;
-      font-family: 'IBM Plex Mono', monospace;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.45);
-      background: none;
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-      position: relative;
-      top: 1px;
+    /* ══ MAIN LAYOUT — two columns on wide screens ═══════════════════════ */
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      align-items: start;
     }
 
-    .tab-btn:hover { color: rgba(255,255,255,0.75); }
-
-    .tab-btn.active {
-      color: var(--ul-modern-green);
-      border-bottom-color: var(--ul-modern-green);
-      font-weight: 500;
-    }
-
-    .tab-btn .tab-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--ul-modern-green);
-      margin-right: 7px;
-      vertical-align: middle;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .tab-btn.active .tab-dot { opacity: 1; }
-
-    /* ══ PANELS ══════════════════════════════════════════════════════════ */
-    .panel { display: none; flex: 1; }
-    .panel.active { display: block; }
-
-    /* ══ CARD DETECTOR PANEL ═════════════════════════════════════════════ */
-    #panel-card {
+    /* ══ LEFT — CARD DETECTOR ════════════════════════════════════════════ */
+    .col-card {
       background: var(--ul-light-green);
       color: var(--ul-text);
-    }
-
-    #panel-card main {
+      padding: 40px 32px;
+      min-height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 44px 20px 32px;
-      gap: 28px;
+      gap: 24px;
+      border-right: 2px solid var(--ul-grey);
+    }
+
+    .section-title {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .section-title h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--ul-green);
+      letter-spacing: -0.01em;
+    }
+
+    .section-pill {
+      font-size: 0.6rem;
+      background: var(--ul-green);
+      color: var(--ul-modern-green);
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
     }
 
     .status-card {
@@ -157,7 +152,7 @@
       border-radius: 16px;
       box-shadow: 0 4px 24px rgba(22,94,58,0.13);
       width: 100%;
-      max-width: 520px;
+      max-width: 480px;
       overflow: hidden;
       border-top: 5px solid var(--ul-green);
     }
@@ -165,14 +160,14 @@
     .status-header {
       background: var(--ul-green);
       color: var(--ul-white);
-      padding: 16px 26px 13px;
+      padding: 14px 22px 12px;
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .status-header h2 {
-      font-size: 0.88rem; font-weight: 700;
+    .status-header h3 {
+      font-size: 0.82rem; font-weight: 700;
       letter-spacing: 1.2px; text-transform: uppercase; flex: 1;
       font-family: 'Syne', sans-serif;
     }
@@ -182,24 +177,23 @@
       border: 1.5px solid var(--ul-modern-green);
       color: var(--ul-modern-green);
       border-radius: 6px;
-      padding: 5px 13px;
-      font-size: 0.78rem;
+      padding: 4px 12px;
+      font-size: 0.75rem;
       cursor: pointer;
-      letter-spacing: 0.5px;
       font-family: 'IBM Plex Mono', monospace;
       transition: background 0.2s, color 0.2s;
     }
     .refresh-btn:hover { background: var(--ul-modern-green); color: var(--ul-green); font-weight: 700; }
 
     .status-body {
-      padding: 34px 26px 28px;
+      padding: 28px 22px 24px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
     }
 
-    .indicator-ring { position: relative; width: 148px; height: 148px; }
+    .indicator-ring { position: relative; width: 130px; height: 130px; }
     .indicator-ring svg { width: 100%; height: 100%; }
     .indicator-icon {
       position: absolute; inset: 0;
@@ -207,9 +201,9 @@
     }
 
     .card-icon {
-      width: 58px; height: 40px;
-      border-radius: 8px;
-      border: 3.5px solid currentColor;
+      width: 52px; height: 36px;
+      border-radius: 7px;
+      border: 3px solid currentColor;
       position: relative;
       transition: color 0.4s;
     }
@@ -217,39 +211,39 @@
       content: '';
       display: block;
       position: absolute;
-      left: 8px; top: 9px;
-      width: 22px; height: 4px;
+      left: 7px; top: 8px;
+      width: 20px; height: 4px;
       border-radius: 2px;
       background: currentColor;
-      box-shadow: 0 8px 0 currentColor;
+      box-shadow: 0 7px 0 currentColor;
     }
 
     .status-label {
-      font-size: 1.6rem; font-weight: 800;
+      font-size: 1.4rem; font-weight: 800;
       letter-spacing: 0.5px; transition: color 0.4s;
       font-family: 'Syne', sans-serif;
     }
-    .status-detail { font-size: 0.87rem; color: #5a7a66; text-align: center; line-height: 1.6; }
+    .status-detail { font-size: 0.82rem; color: #5a7a66; text-align: center; line-height: 1.6; }
 
     .meta-grid {
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 6px;
+      gap: 8px;
+      margin-top: 4px;
     }
     .meta-box {
       background: var(--ul-light-green);
       border-radius: 8px;
-      padding: 10px 14px;
+      padding: 8px 12px;
       border-left: 3px solid var(--ul-modern-green);
     }
     .meta-box .label {
-      font-size: 0.67rem; text-transform: uppercase;
+      font-size: 0.62rem; text-transform: uppercase;
       letter-spacing: 1px; color: #5a7a66; font-weight: 700;
     }
     .meta-box .value {
-      font-size: 0.85rem; font-weight: 700;
+      font-size: 0.8rem; font-weight: 700;
       color: var(--ul-green); margin-top: 2px; word-break: break-all;
     }
 
@@ -269,7 +263,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     .state-loading .ring-track {
       stroke-dasharray: 283; stroke-dashoffset: 212;
-      transform-origin: 74px 74px;
+      transform-origin: 65px 65px;
       animation: spin 1s linear infinite;
     }
 
@@ -277,21 +271,21 @@
       background: var(--ul-white);
       border-radius: 12px;
       box-shadow: 0 4px 24px rgba(22,94,58,0.13);
-      width: 100%; max-width: 520px;
-      padding: 22px 26px;
+      width: 100%; max-width: 480px;
+      padding: 18px 22px;
       border-left: 5px solid var(--ul-modern-green);
     }
     .config-card h3 {
-      font-size: 0.8rem; text-transform: uppercase;
+      font-size: 0.75rem; text-transform: uppercase;
       letter-spacing: 1.2px; color: var(--ul-green);
-      margin-bottom: 12px; font-weight: 800;
+      margin-bottom: 10px; font-weight: 800;
       font-family: 'Syne', sans-serif;
     }
-    .config-row { display: flex; gap: 10px; align-items: center; }
+    .config-row { display: flex; gap: 8px; align-items: center; }
     .config-input {
-      flex: 1; padding: 9px 13px;
+      flex: 1; padding: 8px 12px;
       border: 1.5px solid var(--ul-grey);
-      border-radius: 7px; font-size: 0.85rem;
+      border-radius: 7px; font-size: 0.78rem;
       color: var(--ul-text); outline: none;
       font-family: 'IBM Plex Mono', monospace;
       transition: border-color 0.2s;
@@ -300,24 +294,24 @@
     .config-btn {
       background: var(--ul-green); color: var(--ul-white);
       border: none; border-radius: 7px;
-      padding: 9px 18px; font-size: 0.85rem; font-weight: 700;
+      padding: 8px 16px; font-size: 0.78rem; font-weight: 700;
       cursor: pointer; font-family: 'IBM Plex Mono', monospace;
-      transition: background 0.2s; letter-spacing: 0.3px;
+      transition: background 0.2s;
     }
     .config-btn:hover { background: var(--ul-modern-green); }
-    .config-hint { font-size: 0.73rem; color: #5a7a66; margin-top: 9px; line-height: 1.55; }
+    .config-hint { font-size: 0.68rem; color: #5a7a66; margin-top: 8px; line-height: 1.55; }
     .config-hint code {
-      background: var(--ul-light-green); padding: 1px 5px;
-      border-radius: 4px; font-size: 0.78rem; color: var(--ul-green);
+      background: var(--ul-light-green); padding: 1px 4px;
+      border-radius: 4px; font-size: 0.72rem; color: var(--ul-green);
     }
 
     .refresh-bar-wrap {
-      width: 100%; max-width: 520px;
-      display: flex; align-items: center; gap: 12px;
-      font-size: 0.76rem; color: #5a7a66;
+      width: 100%; max-width: 480px;
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.72rem; color: #5a7a66;
     }
     .refresh-bar-bg {
-      flex: 1; height: 5px;
+      flex: 1; height: 4px;
       background: var(--ul-grey); border-radius: 3px; overflow: hidden;
     }
     .refresh-bar-fill {
@@ -325,45 +319,42 @@
       border-radius: 3px; transition: width 1s linear;
     }
 
-    /* ══ DETECTIONS PANEL ════════════════════════════════════════════════ */
-    #panel-detections {
+    /* ══ RIGHT — PERSON DETECTIONS ═══════════════════════════════════════ */
+    .col-detections {
       background: var(--bg);
       color: #c8dbc8;
-    }
-
-    #panel-detections main {
-      padding: 36px 28px 40px;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
+      padding: 40px 32px;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .stats-bar {
       display: flex;
-      margin-bottom: 32px;
       border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
       background: var(--surface);
     }
     .stat-cell {
-      flex: 1; padding: 14px 20px;
+      flex: 1; padding: 12px 16px;
       border-right: 1px solid var(--border);
     }
     .stat-cell:last-child { border-right: none; }
     .stat-cell .s-label {
-      font-size: 0.62rem; text-transform: uppercase;
-      letter-spacing: 1.2px; color: #4a6b4a; margin-bottom: 4px;
+      font-size: 0.58rem; text-transform: uppercase;
+      letter-spacing: 1.2px; color: #4a6b4a; margin-bottom: 3px;
     }
     .stat-cell .s-value {
-      font-size: 1.3rem; font-weight: 500;
+      font-size: 1.15rem; font-weight: 500;
       color: var(--accent); font-family: 'Syne', sans-serif;
     }
-    .stat-cell .s-sub { font-size: 0.65rem; color: #3a533a; margin-top: 2px; }
+    .stat-cell .s-sub { font-size: 0.6rem; color: #3a533a; margin-top: 2px; }
 
     .live-dot {
       display: inline-block;
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       background: var(--accent); border-radius: 50%;
       margin-right: 6px; vertical-align: middle;
       animation: livepulse 2s ease-in-out infinite;
@@ -373,36 +364,35 @@
       50%       { opacity: 0.4; transform: scale(0.85); }
     }
 
-    .gallery-heading {
+    .det-heading {
       display: flex; align-items: baseline;
-      gap: 14px; margin-bottom: 18px;
+      gap: 12px;
     }
-    .gallery-heading h2 {
+    .det-heading h2 {
       font-family: 'Syne', sans-serif;
-      font-size: 1.4rem; font-weight: 800;
-      color: var(--ul-white); letter-spacing: -0.02em;
+      font-size: 1.1rem; font-weight: 800;
+      color: var(--ul-white); letter-spacing: -0.01em;
     }
     .count-badge {
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       background: var(--accent-dim);
       border: 1px solid var(--accent);
       color: var(--accent);
-      padding: 2px 9px; border-radius: 20px; letter-spacing: 0.5px;
+      padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px;
     }
 
     .empty-state {
-      padding: 72px 24px;
+      padding: 56px 24px;
       text-align: center; background: var(--surface2);
       border: 1px solid var(--border); border-radius: 10px;
     }
-    .empty-state .e-icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.3; }
-    .empty-state p { font-size: 0.8rem; color: #3a533a; line-height: 1.7; }
+    .empty-state .e-icon { font-size: 2rem; margin-bottom: 12px; opacity: 0.3; }
+    .empty-state p { font-size: 0.76rem; color: #3a533a; line-height: 1.7; }
     .empty-state code {
-      background: var(--border); padding: 2px 6px;
-      border-radius: 4px; color: var(--accent); font-size: 0.78rem;
+      background: var(--border); padding: 2px 5px;
+      border-radius: 4px; color: var(--accent); font-size: 0.72rem;
     }
 
-    /* ── Latest image display ── */
     .latest-wrap {
       border: 1px solid var(--border);
       border-radius: 10px;
@@ -419,7 +409,6 @@
       position: relative;
       width: 100%;
       aspect-ratio: 4/3;
-      max-height: 520px;
       overflow: hidden;
       background: #000;
     }
@@ -435,7 +424,7 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       background: linear-gradient(transparent, rgba(5,15,5,0.9));
-      padding: 32px 16px 14px;
+      padding: 28px 14px 12px;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
@@ -445,8 +434,8 @@
       background: rgba(22,94,58,0.9);
       border: 1px solid var(--accent);
       color: var(--accent);
-      font-size: 0.65rem;
-      padding: 4px 10px;
+      font-size: 0.6rem;
+      padding: 3px 9px;
       border-radius: 3px;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -454,7 +443,7 @@
     }
 
     .det-raw {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       color: var(--accent);
       text-decoration: none;
       border-bottom: 1px solid var(--accent);
@@ -464,46 +453,39 @@
     .det-raw:hover { opacity: 1; }
 
     .latest-meta {
-      padding: 14px 20px;
+      padding: 12px 16px;
       display: flex;
-      gap: 0;
       border-top: 1px solid var(--border);
     }
 
     .lm-row {
       flex: 1;
-      padding: 0 16px;
+      padding: 0 14px;
       border-right: 1px solid var(--border);
     }
     .lm-row:first-child { padding-left: 0; }
     .lm-row:last-child  { border-right: none; }
 
     .lm-label {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       text-transform: uppercase;
       letter-spacing: 1px;
       color: #3a533a;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .lm-value {
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       color: var(--accent);
       word-break: break-all;
-    }
-
-    @media (max-width: 600px) {
-      .latest-meta { flex-direction: column; gap: 10px; }
-      .lm-row { border-right: none; padding: 0; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-      .lm-row:last-child { border-bottom: none; padding-bottom: 0; }
     }
 
     /* ══ FOOTER ══════════════════════════════════════════════════════════ */
     footer {
       background: var(--ul-green);
       color: rgba(255,255,255,0.65);
-      padding: 18px 32px;
+      padding: 16px 32px;
       border-top: 3px solid var(--ul-modern-green);
-      font-size: 0.77rem;
+      font-size: 0.75rem;
       display: flex; flex-wrap: wrap;
       justify-content: space-between; align-items: center; gap: 10px;
     }
@@ -513,18 +495,19 @@
     footer .sep { opacity: 0.35; margin: 0 7px; }
 
     /* ══ RESPONSIVE ══════════════════════════════════════════════════════ */
-    @media (max-width: 600px) {
+    @media (max-width: 900px) {
+      main { grid-template-columns: 1fr; }
+      .col-card { border-right: none; border-bottom: 2px solid var(--ul-grey); }
+    }
+
+    @media (max-width: 540px) {
       .header-top { padding: 12px 16px; gap: 12px; }
-      .ul-logo-wrap img { width: 50px; height: 60px; }
-      .ul-wordmark .name-en { font-size: 0.88rem; }
-      .header-right h1 { font-size: 0.9rem; }
-      .tab-btn { padding: 10px 16px; font-size: 0.68rem; }
-      #panel-card main { padding: 26px 14px 22px; }
+      .ul-logo-wrap img { width: 48px; height: 58px; }
+      .col-card, .col-detections { padding: 24px 16px; }
       .meta-grid { grid-template-columns: 1fr; }
-      #panel-detections main { padding: 22px 14px 28px; }
-      .stats-bar { flex-direction: column; }
-      .stat-cell { border-right: none; border-bottom: 1px solid var(--border); }
-      .stat-cell:last-child { border-bottom: none; }
+      .latest-meta { flex-direction: column; gap: 8px; }
+      .lm-row { border-right: none; padding: 0; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+      .lm-row:last-child { border-bottom: none; padding-bottom: 0; }
       footer { flex-direction: column; text-align: center; }
     }
   </style>
@@ -535,7 +518,7 @@
 <header>
   <div class="header-top">
     <a class="ul-logo-wrap" href="https://www.ul.ie" target="_blank" rel="noopener" aria-label="University of Limerick">
-      <img src="docs/ul-crest.svg" alt="UL Crest" />
+      <img src="docs/ul_logo.png" alt="UL Crest" />
       <div class="ul-wordmark">
         <span class="name-en">University of Limerick</span>
         <span class="name-ga">Ollscoil Luimnigh</span>
@@ -546,35 +529,35 @@
       <p>ESP32 Sensor Dashboard</p>
     </div>
   </div>
-
-  <!-- Tab nav lives in the header so it's always visible -->
-  <div class="tab-nav">
-    <button class="tab-btn active" onclick="switchTab('card')" id="tab-card">
-      <span class="tab-dot"></span>Card Detector
-    </button>
-    <button class="tab-btn" onclick="switchTab('detections')" id="tab-detections">
-      <span class="tab-dot"></span>Person Detections
-    </button>
+  <div class="header-nav">
+    Electronic &amp; Computer Engineering &nbsp;·&nbsp; ESP32 IR Sensor &amp; ESP32-CAM Node
   </div>
 </header>
 
-<!-- ══ CARD DETECTOR PANEL ═════════════════════════════════════════════ -->
-<div class="panel active" id="panel-card">
-  <main>
+<!-- ══ MAIN — two columns ══════════════════════════════════════════════ -->
+<main>
+
+  <!-- ── LEFT: Card Detector ────────────────────────────────────────── -->
+  <div class="col-card">
+
+    <div class="section-title">
+      <h2>Card Detector</h2>
+      <span class="section-pill">IR Sensor</span>
+    </div>
 
     <div class="status-card">
       <div class="status-header">
-        <h2>Slot Status</h2>
+        <h3>Slot Status</h3>
         <button class="refresh-btn" onclick="fetchStatus()">↻ Refresh</button>
       </div>
       <div class="status-body">
 
         <div class="indicator-ring" id="indicatorRing">
-          <svg viewBox="0 0 148 148">
-            <circle cx="74" cy="74" r="60" fill="none" stroke="#ddeee4" stroke-width="8"/>
-            <circle class="ring-track" cx="74" cy="74" r="60" fill="none"
-                    stroke-width="8" stroke-linecap="round"
-                    stroke-dasharray="377" stroke-dashoffset="0"/>
+          <svg viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="52" fill="none" stroke="#ddeee4" stroke-width="7"/>
+            <circle class="ring-track" cx="65" cy="65" r="52" fill="none"
+                    stroke-width="7" stroke-linecap="round"
+                    stroke-dasharray="327" stroke-dashoffset="0"/>
           </svg>
           <div class="indicator-icon">
             <div class="card-icon"></div>
@@ -599,7 +582,7 @@
           </div>
           <div class="meta-box">
             <div class="label">Auto-Refresh</div>
-            <div class="value" id="metaRefresh">30 s</div>
+            <div class="value">30 s</div>
           </div>
         </div>
 
@@ -617,22 +600,24 @@
       <h3>Gist Data Source</h3>
       <div class="config-row">
         <input class="config-input" id="gistInput" type="text"
-               placeholder="https://gist.githubusercontent.com/user/id/raw/file.json"
-               value="" />
+               placeholder="https://gist.githubusercontent.com/user/id/raw/file.json" />
         <button class="config-btn" onclick="applyGist()">Apply</button>
       </div>
       <p class="config-hint">
-        Paste your <strong>raw Gist URL</strong> above and click Apply — it's saved between visits.<br>
+        Paste your <strong>raw Gist URL</strong> and click Apply — saved between visits.<br>
         Expected JSON: <code>{"card_present": true, "timestamp": "ISO-8601", "device": "ESP32"}</code>
       </p>
     </div>
 
-  </main>
-</div>
+  </div>
 
-<!-- ══ DETECTIONS PANEL ═══════════════════════════════════════════════ -->
-<div class="panel" id="panel-detections">
-  <main>
+  <!-- ── RIGHT: Person Detections ──────────────────────────────────── -->
+  <div class="col-detections">
+
+    <div class="section-title" style="max-width:100%">
+      <h2 style="color:#fff; font-family:'Syne',sans-serif; font-size:1.1rem; font-weight:800;">Person Detections</h2>
+      <span class="section-pill" style="background:var(--accent-dim); color:var(--accent); border:1px solid var(--accent);">ESP32-CAM</span>
+    </div>
 
     <div class="stats-bar">
       <div class="stat-cell">
@@ -641,56 +626,55 @@
         <div class="s-sub">saved to repo</div>
       </div>
       <div class="stat-cell">
-        <div class="s-label">Latest Detection</div>
+        <div class="s-label">Latest</div>
         <div class="s-value" id="statLatest">—</div>
         <div class="s-sub" id="statLatestDate">—</div>
       </div>
       <div class="stat-cell">
         <div class="s-label">Status</div>
         <div class="s-value"><span class="live-dot"></span><span id="statStatus">Idle</span></div>
-        <div class="s-sub">refreshes every 30s</div>
+        <div class="s-sub">every 30s</div>
       </div>
     </div>
 
-    <div class="gallery-heading">
+    <div class="det-heading">
       <h2>Latest Detection</h2>
       <span class="count-badge" id="countBadge">checking…</span>
     </div>
 
-    <!-- Single latest image display -->
-    <div id="detectionView">
-      <div class="empty-state" id="detEmpty">
-        <div class="e-icon">📷</div>
-        <p>No person detected yet.<br>
-          Run <code>detect.py</code> — the latest capture will appear here.</p>
-      </div>
-      <div class="latest-wrap" id="detLatest" style="display:none">
-        <div class="latest-frame">
-          <img id="latestImg" src="" alt="Latest person detection" />
-          <div class="latest-overlay">
-            <span class="det-tag">Person Detected</span>
-            <a id="latestLink" href="#" target="_blank" class="det-raw">open raw ↗</a>
-          </div>
+    <div id="detEmpty" class="empty-state">
+      <div class="e-icon">📷</div>
+      <p>No person detected yet.<br>
+        Run <code>detect.py</code> — the latest capture will appear here.</p>
+    </div>
+
+    <div class="latest-wrap" id="detLatest" style="display:none">
+      <div class="latest-frame">
+        <img id="latestImg" src="" alt="Latest person detection" />
+        <div class="latest-overlay">
+          <span class="det-tag">Person Detected</span>
+          <a id="latestLink" href="#" target="_blank" class="det-raw">open raw ↗</a>
         </div>
-        <div class="latest-meta">
-          <div class="lm-row">
-            <span class="lm-label">Time</span>
-            <span class="lm-value" id="latestTime">—</span>
-          </div>
-          <div class="lm-row">
-            <span class="lm-label">Date</span>
-            <span class="lm-value" id="latestDate">—</span>
-          </div>
-          <div class="lm-row">
-            <span class="lm-label">File</span>
-            <span class="lm-value" id="latestFile">—</span>
-          </div>
+      </div>
+      <div class="latest-meta">
+        <div class="lm-row">
+          <div class="lm-label">Time</div>
+          <div class="lm-value" id="latestTime">—</div>
+        </div>
+        <div class="lm-row">
+          <div class="lm-label">Date</div>
+          <div class="lm-value" id="latestDate">—</div>
+        </div>
+        <div class="lm-row">
+          <div class="lm-label">File</div>
+          <div class="lm-value" id="latestFile">—</div>
         </div>
       </div>
     </div>
 
-  </main>
-</div>
+  </div>
+
+</main>
 
 <!-- ══ FOOTER ══════════════════════════════════════════════════════════ -->
 <footer>
@@ -702,27 +686,17 @@
   <span>
     ESP32 IoT Monitor
     <span class="sep">·</span>
-    <a href="https://github.com/lukegrif/card-detector" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/LukeGrif/Card-Detector" target="_blank" rel="noopener">GitHub</a>
   </span>
 </footer>
 
 <!-- ══ SCRIPT ══════════════════════════════════════════════════════════ -->
 <script>
-  // ── Detections config — update these to match your detect.py ──────────
+  const GITHUB_TOKEN   = 'your_token_here';
   const GITHUB_USER    = 'LukeGrif';
   const GITHUB_REPO    = 'Card-Detector';
   const IMAGES_FOLDER  = 'detections';
-  const DET_REFRESH_MS = 30000;
-  // ──────────────────────────────────────────────────────────────────────
-
-  // ── Tab switching ──────────────────────────────────────────────────────
-  function switchTab(name) {
-    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('panel-' + name).classList.add('active');
-    document.getElementById('tab-' + name).classList.add('active');
-    if (name === 'detections') loadGallery();
-  }
+  const DET_REFRESH_MS = 60000;
 
   // ══ CARD DETECTOR ══════════════════════════════════════════════════════
   const REFRESH_S = 30;
@@ -775,7 +749,7 @@
       device    = d.device    || d.id   || d.name || null;
     } catch (_) {
       const lc = text.toLowerCase();
-      if (['1','true','yes','present','card','detected'].includes(lc))           present = true;
+      if (['1','true','yes','present','card','detected'].includes(lc))            present = true;
       if (['0','false','no','absent','empty','none','not detected'].includes(lc)) present = false;
     }
     if (present === null) {
@@ -829,26 +803,28 @@
   async function loadGallery() {
     document.getElementById('statStatus').textContent = 'Refreshing…';
     try {
-      const r = await fetch(API_BASE + '?_=' + Date.now());
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const files = (await r.json())
+        const r = await fetch(API_BASE + '?_=' + Date.now(), {
+        headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+        });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const files = (await r.json())
         .filter(f => f.name.endsWith('.jpg'))
-        .sort((a, b) => b.name.localeCompare(a.name)); // newest first
-      renderLatest(files);
-      document.getElementById('statStatus').textContent = 'Live';
+        .sort((a, b) => b.name.localeCompare(a.name));
+        renderLatest(files);
+        document.getElementById('statStatus').textContent = 'Live';
     } catch(e) {
-      document.getElementById('statStatus').textContent = 'Error';
-      console.error(e);
+        document.getElementById('statStatus').textContent = 'Error';
+        console.error(e);
     }
     clearInterval(detInterval);
     detInterval = setInterval(loadGallery, DET_REFRESH_MS);
-  }
+    }
 
   function parseFilename(name) {
     const m = name.match(/(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})/);
-    if (!m) return { time: name, date: '', full: name };
+    if (!m) return { time: name, date: '' };
     const [, date, hh, mm, ss] = m;
-    return { time: `${hh}:${mm}:${ss}`, date, full: `${hh}:${mm}:${ss} · ${date}` };
+    return { time: `${hh}:${mm}:${ss}`, date };
   }
 
   function renderLatest(files) {
@@ -864,14 +840,12 @@
       return;
     }
 
-    // Show only the most recent file
     const latest = files[0];
-    const url    = `${RAW_BASE}/${latest.name}?_=${Date.now()}`;
+    const url = `${RAW_BASE}/${latest.name}?_=${Date.now()}`;
     const { time, date } = parseFilename(latest.name);
 
     document.getElementById('statLatest').textContent     = time;
     document.getElementById('statLatestDate').textContent = date;
-
     document.getElementById('latestImg').src   = url;
     document.getElementById('latestLink').href = url;
     document.getElementById('latestTime').textContent = time;
@@ -881,6 +855,9 @@
     document.getElementById('detEmpty').style.display  = 'none';
     document.getElementById('detLatest').style.display = 'block';
   }
+
+  // Load detections on page load
+  loadGallery();
 </script>
 
 </body>
