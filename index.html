@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IoT Monitor — University of Limerick</title>
+
+  <link rel="icon" type="image/svg+xml" href="docs/ul-crest.svg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --ul-green:        #165E3A;
+      --ul-modern-green: #3BB143;
+      --ul-light-green:  #e8f5ec;
+      --ul-white:        #ffffff;
+      --ul-grey:         #ddeee4;
+      --ul-text:         #0f3d22;
+      --bg:              #0c0f0d;
+      --surface:         #111812;
+      --surface2:        #161d16;
+      --border:          #1f2b1f;
+      --accent:          #3BB143;
+      --accent-dim:      rgba(59,177,67,0.15);
+      --shadow:          0 4px 32px rgba(0,0,0,0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: var(--bg);
+      color: #c8dbc8;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ══ HEADER ══════════════════════════════════════════════════════════ */
+    header {
+      background: var(--ul-green);
+      color: var(--ul-white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 32px;
+      border-bottom: 3px solid var(--ul-modern-green);
+    }
+
+    .ul-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .ul-logo-wrap img {
+      width: 64px;
+      height: 76px;
+      flex-shrink: 0;
+      object-fit: contain;
+    }
+
+    .ul-wordmark { display: flex; flex-direction: column; gap: 1px; }
+    .ul-wordmark .name-en {
+      font-size: 1.05rem; font-weight: 800; color: var(--ul-white);
+      line-height: 1.15; letter-spacing: 0.3px; font-family: 'Syne', sans-serif;
+    }
+    .ul-wordmark .name-ga {
+      font-size: 0.72rem; color: var(--ul-modern-green);
+      letter-spacing: 0.8px; font-weight: 600; text-transform: uppercase;
+    }
+
+    .header-right { margin-left: auto; text-align: right; }
+    .header-right h1 {
+      font-size: 1.1rem; font-weight: 700; color: var(--ul-white);
+      font-family: 'Syne', sans-serif;
+    }
+    .header-right p {
+      font-size: 0.73rem; color: var(--ul-modern-green);
+      letter-spacing: 1px; text-transform: uppercase; margin-top: 1px;
+    }
+
+    /* ══ TAB NAV ═════════════════════════════════════════════════════════ */
+    .tab-nav {
+      display: flex;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid rgba(59,177,67,0.2);
+    }
+
+    .tab-btn {
+      padding: 10px 28px;
+      font-size: 0.75rem;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      position: relative;
+      top: 1px;
+    }
+
+    .tab-btn:hover { color: rgba(255,255,255,0.75); }
+
+    .tab-btn.active {
+      color: var(--ul-modern-green);
+      border-bottom-color: var(--ul-modern-green);
+      font-weight: 500;
+    }
+
+    .tab-btn .tab-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--ul-modern-green);
+      margin-right: 7px;
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .tab-btn.active .tab-dot { opacity: 1; }
+
+    /* ══ PANELS ══════════════════════════════════════════════════════════ */
+    .panel { display: none; flex: 1; }
+    .panel.active { display: block; }
+
+    /* ══ CARD DETECTOR PANEL ═════════════════════════════════════════════ */
+    #panel-card {
+      background: var(--ul-light-green);
+      color: var(--ul-text);
+    }
+
+    #panel-card main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 44px 20px 32px;
+      gap: 28px;
+    }
+
+    .status-card {
+      background: var(--ul-white);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(22,94,58,0.13);
+      width: 100%;
+      max-width: 520px;
+      overflow: hidden;
+      border-top: 5px solid var(--ul-green);
+    }
+
+    .status-header {
+      background: var(--ul-green);
+      color: var(--ul-white);
+      padding: 16px 26px 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-header h2 {
+      font-size: 0.88rem; font-weight: 700;
+      letter-spacing: 1.2px; text-transform: uppercase; flex: 1;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .refresh-btn {
+      background: none;
+      border: 1.5px solid var(--ul-modern-green);
+      color: var(--ul-modern-green);
+      border-radius: 6px;
+      padding: 5px 13px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: background 0.2s, color 0.2s;
+    }
+    .refresh-btn:hover { background: var(--ul-modern-green); color: var(--ul-green); font-weight: 700; }
+
+    .status-body {
+      padding: 34px 26px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .indicator-ring { position: relative; width: 148px; height: 148px; }
+    .indicator-ring svg { width: 100%; height: 100%; }
+    .indicator-icon {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .card-icon {
+      width: 58px; height: 40px;
+      border-radius: 8px;
+      border: 3.5px solid currentColor;
+      position: relative;
+      transition: color 0.4s;
+    }
+    .card-icon::after {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 8px; top: 9px;
+      width: 22px; height: 4px;
+      border-radius: 2px;
+      background: currentColor;
+      box-shadow: 0 8px 0 currentColor;
+    }
+
+    .status-label {
+      font-size: 1.6rem; font-weight: 800;
+      letter-spacing: 0.5px; transition: color 0.4s;
+      font-family: 'Syne', sans-serif;
+    }
+    .status-detail { font-size: 0.87rem; color: #5a7a66; text-align: center; line-height: 1.6; }
+
+    .meta-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .meta-box {
+      background: var(--ul-light-green);
+      border-radius: 8px;
+      padding: 10px 14px;
+      border-left: 3px solid var(--ul-modern-green);
+    }
+    .meta-box .label {
+      font-size: 0.67rem; text-transform: uppercase;
+      letter-spacing: 1px; color: #5a7a66; font-weight: 700;
+    }
+    .meta-box .value {
+      font-size: 0.85rem; font-weight: 700;
+      color: var(--ul-green); margin-top: 2px; word-break: break-all;
+    }
+
+    .state-present .ring-track  { stroke: #3BB143; }
+    .state-present .card-icon   { color: #3BB143; }
+    .state-present .status-label{ color: #3BB143; }
+    .state-absent  .ring-track  { stroke: #e03c3c; }
+    .state-absent  .card-icon   { color: #e03c3c; }
+    .state-absent  .status-label{ color: #e03c3c; }
+    .state-loading .ring-track  { stroke: #3BB143; }
+    .state-loading .card-icon   { color: #3BB143; }
+    .state-loading .status-label{ color: #3BB143; }
+    .state-error   .ring-track  { stroke: #aaa; }
+    .state-error   .card-icon   { color: #aaa; }
+    .state-error   .status-label{ color: #aaa; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .state-loading .ring-track {
+      stroke-dasharray: 283; stroke-dashoffset: 212;
+      transform-origin: 74px 74px;
+      animation: spin 1s linear infinite;
+    }
+
+    .config-card {
+      background: var(--ul-white);
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(22,94,58,0.13);
+      width: 100%; max-width: 520px;
+      padding: 22px 26px;
+      border-left: 5px solid var(--ul-modern-green);
+    }
+    .config-card h3 {
+      font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--ul-green);
+      margin-bottom: 12px; font-weight: 800;
+      font-family: 'Syne', sans-serif;
+    }
+    .config-row { display: flex; gap: 10px; align-items: center; }
+    .config-input {
+      flex: 1; padding: 9px 13px;
+      border: 1.5px solid var(--ul-grey);
+      border-radius: 7px; font-size: 0.85rem;
+      color: var(--ul-text); outline: none;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: border-color 0.2s;
+    }
+    .config-input:focus { border-color: var(--ul-modern-green); }
+    .config-btn {
+      background: var(--ul-green); color: var(--ul-white);
+      border: none; border-radius: 7px;
+      padding: 9px 18px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+      transition: background 0.2s; letter-spacing: 0.3px;
+    }
+    .config-btn:hover { background: var(--ul-modern-green); }
+    .config-hint { font-size: 0.73rem; color: #5a7a66; margin-top: 9px; line-height: 1.55; }
+    .config-hint code {
+      background: var(--ul-light-green); padding: 1px 5px;
+      border-radius: 4px; font-size: 0.78rem; color: var(--ul-green);
+    }
+
+    .refresh-bar-wrap {
+      width: 100%; max-width: 520px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 0.76rem; color: #5a7a66;
+    }
+    .refresh-bar-bg {
+      flex: 1; height: 5px;
+      background: var(--ul-grey); border-radius: 3px; overflow: hidden;
+    }
+    .refresh-bar-fill {
+      height: 100%; background: var(--ul-modern-green);
+      border-radius: 3px; transition: width 1s linear;
+    }
+
+    /* ══ DETECTIONS PANEL ════════════════════════════════════════════════ */
+    #panel-detections {
+      background: var(--bg);
+      color: #c8dbc8;
+    }
+
+    #panel-detections main {
+      padding: 36px 28px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .stats-bar {
+      display: flex;
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .stat-cell {
+      flex: 1; padding: 14px 20px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-cell .s-label {
+      font-size: 0.62rem; text-transform: uppercase;
+      letter-spacing: 1.2px; color: #4a6b4a; margin-bottom: 4px;
+    }
+    .stat-cell .s-value {
+      font-size: 1.3rem; font-weight: 500;
+      color: var(--accent); font-family: 'Syne', sans-serif;
+    }
+    .stat-cell .s-sub { font-size: 0.65rem; color: #3a533a; margin-top: 2px; }
+
+    .live-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: var(--accent); border-radius: 50%;
+      margin-right: 6px; vertical-align: middle;
+      animation: livepulse 2s ease-in-out infinite;
+    }
+    @keyframes livepulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .gallery-heading {
+      display: flex; align-items: baseline;
+      gap: 14px; margin-bottom: 18px;
+    }
+    .gallery-heading h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--ul-white); letter-spacing: -0.02em;
+    }
+    .count-badge {
+      font-size: 0.68rem;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 2px 9px; border-radius: 20px; letter-spacing: 0.5px;
+    }
+
+    .empty-state {
+      padding: 72px 24px;
+      text-align: center; background: var(--surface2);
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .empty-state .e-icon { font-size: 2.5rem; margin-bottom: 14px; opacity: 0.3; }
+    .empty-state p { font-size: 0.8rem; color: #3a533a; line-height: 1.7; }
+    .empty-state code {
+      background: var(--border); padding: 2px 6px;
+      border-radius: 4px; color: var(--accent); font-size: 0.78rem;
+    }
+
+    /* ── Latest image display ── */
+    .latest-wrap {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--surface);
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .latest-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/3;
+      max-height: 520px;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .latest-frame img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      display: block;
+      filter: brightness(0.95);
+    }
+
+    .latest-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(transparent, rgba(5,15,5,0.9));
+      padding: 32px 16px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .det-tag {
+      background: rgba(22,94,58,0.9);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.65rem;
+      padding: 4px 10px;
+      border-radius: 3px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      backdrop-filter: blur(4px);
+    }
+
+    .det-raw {
+      font-size: 0.65rem;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .det-raw:hover { opacity: 1; }
+
+    .latest-meta {
+      padding: 14px 20px;
+      display: flex;
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .lm-row {
+      flex: 1;
+      padding: 0 16px;
+      border-right: 1px solid var(--border);
+    }
+    .lm-row:first-child { padding-left: 0; }
+    .lm-row:last-child  { border-right: none; }
+
+    .lm-label {
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #3a533a;
+      margin-bottom: 3px;
+    }
+    .lm-value {
+      font-size: 0.82rem;
+      color: var(--accent);
+      word-break: break-all;
+    }
+
+    @media (max-width: 600px) {
+      .latest-meta { flex-direction: column; gap: 10px; }
+      .lm-row { border-right: none; padding: 0; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+      .lm-row:last-child { border-bottom: none; padding-bottom: 0; }
+    }
+
+    /* ══ FOOTER ══════════════════════════════════════════════════════════ */
+    footer {
+      background: var(--ul-green);
+      color: rgba(255,255,255,0.65);
+      padding: 18px 32px;
+      border-top: 3px solid var(--ul-modern-green);
+      font-size: 0.77rem;
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between; align-items: center; gap: 10px;
+    }
+    footer .author { color: var(--ul-modern-green); font-weight: 700; }
+    footer a { color: var(--ul-modern-green); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    footer .sep { opacity: 0.35; margin: 0 7px; }
+
+    /* ══ RESPONSIVE ══════════════════════════════════════════════════════ */
+    @media (max-width: 600px) {
+      .header-top { padding: 12px 16px; gap: 12px; }
+      .ul-logo-wrap img { width: 50px; height: 60px; }
+      .ul-wordmark .name-en { font-size: 0.88rem; }
+      .header-right h1 { font-size: 0.9rem; }
+      .tab-btn { padding: 10px 16px; font-size: 0.68rem; }
+      #panel-card main { padding: 26px 14px 22px; }
+      .meta-grid { grid-template-columns: 1fr; }
+      #panel-detections main { padding: 22px 14px 28px; }
+      .stats-bar { flex-direction: column; }
+      .stat-cell { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-cell:last-child { border-bottom: none; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══════════════════════════════════════════════════════════ -->
+<header>
+  <div class="header-top">
+    <a class="ul-logo-wrap" href="https://www.ul.ie" target="_blank" rel="noopener" aria-label="University of Limerick">
+      <img src="docs/ul-crest.svg" alt="UL Crest" />
+      <div class="ul-wordmark">
+        <span class="name-en">University of Limerick</span>
+        <span class="name-ga">Ollscoil Luimnigh</span>
+      </div>
+    </a>
+    <div class="header-right">
+      <h1>IoT Monitor</h1>
+      <p>ESP32 Sensor Dashboard</p>
+    </div>
+  </div>
+
+  <!-- Tab nav lives in the header so it's always visible -->
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('card')" id="tab-card">
+      <span class="tab-dot"></span>Card Detector
+    </button>
+    <button class="tab-btn" onclick="switchTab('detections')" id="tab-detections">
+      <span class="tab-dot"></span>Person Detections
+    </button>
+  </div>
+</header>
+
+<!-- ══ CARD DETECTOR PANEL ═════════════════════════════════════════════ -->
+<div class="panel active" id="panel-card">
+  <main>
+
+    <div class="status-card">
+      <div class="status-header">
+        <h2>Slot Status</h2>
+        <button class="refresh-btn" onclick="fetchStatus()">↻ Refresh</button>
+      </div>
+      <div class="status-body">
+
+        <div class="indicator-ring" id="indicatorRing">
+          <svg viewBox="0 0 148 148">
+            <circle cx="74" cy="74" r="60" fill="none" stroke="#ddeee4" stroke-width="8"/>
+            <circle class="ring-track" cx="74" cy="74" r="60" fill="none"
+                    stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="377" stroke-dashoffset="0"/>
+          </svg>
+          <div class="indicator-icon">
+            <div class="card-icon"></div>
+          </div>
+        </div>
+
+        <div class="status-label" id="statusLabel">Connecting…</div>
+        <div class="status-detail" id="statusDetail">Fetching latest data from sensor node.</div>
+
+        <div class="meta-grid">
+          <div class="meta-box">
+            <div class="label">Last Updated</div>
+            <div class="value" id="metaTime">—</div>
+          </div>
+          <div class="meta-box">
+            <div class="label">Device</div>
+            <div class="value" id="metaDevice">—</div>
+          </div>
+          <div class="meta-box">
+            <div class="label">Raw Value</div>
+            <div class="value" id="metaRaw">—</div>
+          </div>
+          <div class="meta-box">
+            <div class="label">Auto-Refresh</div>
+            <div class="value" id="metaRefresh">30 s</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="refresh-bar-wrap">
+      <span id="countdownLabel">Next refresh in 30s</span>
+      <div class="refresh-bar-bg">
+        <div class="refresh-bar-fill" id="refreshBar" style="width:100%"></div>
+      </div>
+    </div>
+
+    <div class="config-card">
+      <h3>Gist Data Source</h3>
+      <div class="config-row">
+        <input class="config-input" id="gistInput" type="text"
+               placeholder="https://gist.githubusercontent.com/user/id/raw/file.json"
+               value="" />
+        <button class="config-btn" onclick="applyGist()">Apply</button>
+      </div>
+      <p class="config-hint">
+        Paste your <strong>raw Gist URL</strong> above and click Apply — it's saved between visits.<br>
+        Expected JSON: <code>{"card_present": true, "timestamp": "ISO-8601", "device": "ESP32"}</code>
+      </p>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ DETECTIONS PANEL ═══════════════════════════════════════════════ -->
+<div class="panel" id="panel-detections">
+  <main>
+
+    <div class="stats-bar">
+      <div class="stat-cell">
+        <div class="s-label">Total Captures</div>
+        <div class="s-value" id="statTotal">—</div>
+        <div class="s-sub">saved to repo</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-label">Latest Detection</div>
+        <div class="s-value" id="statLatest">—</div>
+        <div class="s-sub" id="statLatestDate">—</div>
+      </div>
+      <div class="stat-cell">
+        <div class="s-label">Status</div>
+        <div class="s-value"><span class="live-dot"></span><span id="statStatus">Idle</span></div>
+        <div class="s-sub">refreshes every 30s</div>
+      </div>
+    </div>
+
+    <div class="gallery-heading">
+      <h2>Latest Detection</h2>
+      <span class="count-badge" id="countBadge">checking…</span>
+    </div>
+
+    <!-- Single latest image display -->
+    <div id="detectionView">
+      <div class="empty-state" id="detEmpty">
+        <div class="e-icon">📷</div>
+        <p>No person detected yet.<br>
+          Run <code>detect.py</code> — the latest capture will appear here.</p>
+      </div>
+      <div class="latest-wrap" id="detLatest" style="display:none">
+        <div class="latest-frame">
+          <img id="latestImg" src="" alt="Latest person detection" />
+          <div class="latest-overlay">
+            <span class="det-tag">Person Detected</span>
+            <a id="latestLink" href="#" target="_blank" class="det-raw">open raw ↗</a>
+          </div>
+        </div>
+        <div class="latest-meta">
+          <div class="lm-row">
+            <span class="lm-label">Time</span>
+            <span class="lm-value" id="latestTime">—</span>
+          </div>
+          <div class="lm-row">
+            <span class="lm-label">Date</span>
+            <span class="lm-value" id="latestDate">—</span>
+          </div>
+          <div class="lm-row">
+            <span class="lm-label">File</span>
+            <span class="lm-value" id="latestFile">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════════════ -->
+<footer>
+  <span>
+    <span class="author">Luke Griffin</span>
+    <span class="sep">|</span>
+    University of Limerick &nbsp;·&nbsp; Electronic &amp; Computer Engineering
+  </span>
+  <span>
+    ESP32 IoT Monitor
+    <span class="sep">·</span>
+    <a href="https://github.com/lukegrif/card-detector" target="_blank" rel="noopener">GitHub</a>
+  </span>
+</footer>
+
+<!-- ══ SCRIPT ══════════════════════════════════════════════════════════ -->
+<script>
+  // ── Detections config — update these to match your detect.py ──────────
+  const GITHUB_USER    = 'LukeGrif';
+  const GITHUB_REPO    = 'Card-Detector';
+  const IMAGES_FOLDER  = 'detections';
+  const DET_REFRESH_MS = 30000;
+  // ──────────────────────────────────────────────────────────────────────
+
+  // ── Tab switching ──────────────────────────────────────────────────────
+  function switchTab(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'detections') loadGallery();
+  }
+
+  // ══ CARD DETECTOR ══════════════════════════════════════════════════════
+  const REFRESH_S = 30;
+  const LS_KEY    = 'ul_card_detector_gist_url';
+
+  let gistUrl  = localStorage.getItem(LS_KEY) || '';
+  let countdown = REFRESH_S;
+  let barTimer  = null;
+
+  document.getElementById('gistInput').value = gistUrl;
+  fetchStatus();
+  startCountdown();
+
+  function applyGist() {
+    gistUrl = document.getElementById('gistInput').value.trim();
+    localStorage.setItem(LS_KEY, gistUrl);
+    fetchStatus();
+    countdown = REFRESH_S;
+  }
+
+  async function fetchStatus() {
+    setState('loading', 'Connecting…', 'Fetching latest data from sensor node.');
+    if (!gistUrl) {
+      setState('error', 'No Source', 'Enter your raw Gist URL in the panel below.');
+      clearMeta(); return;
+    }
+    try {
+      const res = await fetch(gistUrl + '?_=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = (await res.text()).trim();
+      document.getElementById('metaRaw').textContent = text.slice(0, 80);
+      parseAndRender(text);
+    } catch (err) {
+      setState('error', 'Error', 'Could not reach Gist: ' + err.message);
+      document.getElementById('metaTime').textContent = 'Failed';
+      document.getElementById('metaDevice').textContent = '—';
+    }
+  }
+
+  function parseAndRender(text) {
+    let present = null, timestamp = null, device = null;
+    try {
+      const d = JSON.parse(text);
+      if      ('card_present' in d) present = !!d.card_present;
+      else if ('card'         in d) present = !!d.card;
+      else if ('detected'     in d) present = !!d.detected;
+      else if ('status'       in d) present = (String(d.status).toLowerCase().includes('present') || d.status === 1 || d.status === true);
+      else if ('value'        in d) present = !!(d.value);
+      timestamp = d.timestamp || d.time || d.ts || null;
+      device    = d.device    || d.id   || d.name || null;
+    } catch (_) {
+      const lc = text.toLowerCase();
+      if (['1','true','yes','present','card','detected'].includes(lc))           present = true;
+      if (['0','false','no','absent','empty','none','not detected'].includes(lc)) present = false;
+    }
+    if (present === null) {
+      setState('error', 'Unknown', 'Could not parse sensor data. Check the Gist format.');
+      return;
+    }
+    setState(
+      present ? 'present' : 'absent',
+      present ? 'Card Detected' : 'No Card',
+      present ? 'A card is currently present in the slot.' : 'The card slot is empty.'
+    );
+    document.getElementById('metaTime').textContent = timestamp
+      ? (() => { try { const t = new Date(timestamp); return t.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'}) + ' ' + t.toLocaleDateString([],{day:'2-digit',month:'short'}); } catch(_){ return timestamp; } })()
+      : new Date().toLocaleTimeString();
+    document.getElementById('metaDevice').textContent = device || 'ESP32 Node';
+  }
+
+  function setState(state, label, detail) {
+    document.getElementById('indicatorRing').className = 'indicator-ring state-' + state;
+    document.getElementById('statusLabel').textContent  = label;
+    document.getElementById('statusDetail').textContent = detail;
+  }
+
+  function clearMeta() {
+    ['metaTime','metaDevice','metaRaw'].forEach(id =>
+      document.getElementById(id).textContent = '—');
+  }
+
+  function startCountdown() {
+    clearInterval(barTimer);
+    countdown = REFRESH_S;
+    updateBar();
+    barTimer = setInterval(() => {
+      countdown = Math.max(0, countdown - 1);
+      updateBar();
+      if (countdown === 0) { fetchStatus(); countdown = REFRESH_S; }
+    }, 1000);
+  }
+
+  function updateBar() {
+    document.getElementById('countdownLabel').textContent = 'Next refresh in ' + countdown + 's';
+    document.getElementById('refreshBar').style.width = ((countdown / REFRESH_S) * 100) + '%';
+  }
+
+  // ══ PERSON DETECTIONS ══════════════════════════════════════════════════
+  const API_BASE = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${IMAGES_FOLDER}`;
+  const RAW_BASE = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/main/${IMAGES_FOLDER}`;
+
+  let detInterval = null;
+
+  async function loadGallery() {
+    document.getElementById('statStatus').textContent = 'Refreshing…';
+    try {
+      const r = await fetch(API_BASE + '?_=' + Date.now());
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const files = (await r.json())
+        .filter(f => f.name.endsWith('.jpg'))
+        .sort((a, b) => b.name.localeCompare(a.name)); // newest first
+      renderLatest(files);
+      document.getElementById('statStatus').textContent = 'Live';
+    } catch(e) {
+      document.getElementById('statStatus').textContent = 'Error';
+      console.error(e);
+    }
+    clearInterval(detInterval);
+    detInterval = setInterval(loadGallery, DET_REFRESH_MS);
+  }
+
+  function parseFilename(name) {
+    const m = name.match(/(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})-(\d{2})/);
+    if (!m) return { time: name, date: '', full: name };
+    const [, date, hh, mm, ss] = m;
+    return { time: `${hh}:${mm}:${ss}`, date, full: `${hh}:${mm}:${ss} · ${date}` };
+  }
+
+  function renderLatest(files) {
+    const total = files.filter(f => f.name !== '.gitkeep').length;
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('countBadge').textContent = total + ' image' + (total !== 1 ? 's' : '') + ' stored';
+
+    if (total === 0) {
+      document.getElementById('detEmpty').style.display  = 'block';
+      document.getElementById('detLatest').style.display = 'none';
+      document.getElementById('statLatest').textContent     = '—';
+      document.getElementById('statLatestDate').textContent = '—';
+      return;
+    }
+
+    // Show only the most recent file
+    const latest = files[0];
+    const url    = `${RAW_BASE}/${latest.name}?_=${Date.now()}`;
+    const { time, date } = parseFilename(latest.name);
+
+    document.getElementById('statLatest').textContent     = time;
+    document.getElementById('statLatestDate').textContent = date;
+
+    document.getElementById('latestImg').src   = url;
+    document.getElementById('latestLink').href = url;
+    document.getElementById('latestTime').textContent = time;
+    document.getElementById('latestDate').textContent = date;
+    document.getElementById('latestFile').textContent = latest.name;
+
+    document.getElementById('detEmpty').style.display  = 'none';
+    document.getElementById('detLatest').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
